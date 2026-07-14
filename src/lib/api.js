@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: '/api' })
+// ── Production backend URL ────────────────────────────────
+// All API calls go to the deployed Render backend
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://web-based-voting-backend.onrender.com'
+
+const api = axios.create({ baseURL: `${BASE_URL}/api` })
 
 // Attach JWT token to every request automatically
 api.interceptors.request.use((config) => {
@@ -22,13 +26,13 @@ api.interceptors.response.use(
   }
 )
 
-// ── Auth ────────────────────────────────────────────────
+// ── Auth ─────────────────────────────────────────────────
 export const register = (data) => api.post('/auth/register', data)
 export const login    = (matric_number, password) =>
   api.post('/auth/login', { matric_number, password })
 export const getMe    = () => api.get('/voter/me')
 
-// ── Elections & Voting ───────────────────────────────────
+// ── Elections & Voting ────────────────────────────────────
 export const getElections  = ()   => api.get('/elections')
 export const getCandidates = (id) => api.get(`/elections/${id}/candidates`)
 export const getResults    = (id) => api.get(`/elections/${id}/results`)
@@ -36,7 +40,7 @@ export const castVote      = (election_id, candidate_id) =>
   api.post('/voter/vote', { election_id, candidate_id })
 export const verifyReceipt = (receipt) => api.get(`/verify/${receipt}`)
 
-// ── Admin ────────────────────────────────────────────────
+// ── Admin ─────────────────────────────────────────────────
 export const getStats       = ()         => api.get('/admin/stats')
 export const getAllUsers     = ()         => api.get('/admin/users')
 export const getAuditLogs   = ()         => api.get('/admin/audit-logs')
@@ -44,3 +48,5 @@ export const createElection = (data)     => api.post('/admin/elections', data)
 export const toggleElection = (id)       => api.patch(`/admin/elections/${id}/toggle`)
 export const addCandidate   = (data)     => api.post('/admin/candidates', data)
 export const setEligibility = (uid, val) => api.patch(`/admin/users/${uid}/eligibility`, { is_eligible: val })
+
+export default api
