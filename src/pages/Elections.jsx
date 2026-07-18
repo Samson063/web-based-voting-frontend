@@ -2,44 +2,55 @@ import { useState, useEffect } from 'react'
 import { getElections, getCandidates, castVote } from '../lib/api'
 import { useAuth } from '../lib/AuthContext'
 import Navbar from '../components/ui/Navbar'
-import Alert from '../components/ui/Alert'
 import Spinner from '../components/ui/Spinner'
 import { Vote, ChevronDown, ChevronUp, CheckCircle, Clock, Users, Copy } from 'lucide-react'
 
 export default function Elections() {
   const { user } = useAuth()
-  const [elections, setElections]       = useState([])
-  const [expanded, setExpanded]         = useState(null)
-  const [candidates, setCandidates]     = useState({})
-  const [selected, setSelected]         = useState({})
-  const [receipt, setReceipt]           = useState('')
-  const [error, setError]               = useState('')
-  const [success, setSuccess]           = useState('')
-  const [loading, setLoading]           = useState(true)
-  const [voting, setVoting]             = useState(false)
-  const [copied, setCopied]             = useState(false)
+  const [elections, setElections]     = useState([])
+  const [expanded, setExpanded]       = useState(null)
+  const [candidates, setCandidates]   = useState({})
+  const [selected, setSelected]       = useState({})
+  const [receipt, setReceipt]         = useState('')
+  const [error, setError]             = useState('')
+  const [success, setSuccess]         = useState('')
+  const [loading, setLoading]         = useState(true)
+  const [voting, setVoting]           = useState(false)
+  const [copied, setCopied]           = useState(false)
 
   useEffect(() => { fetchElections() }, [])
 
   const fetchElections = async () => {
     try {
       const res = await getElections()
-      setElections(res.data)
-    } catch { setError('Failed to load elections') }
-    finally { setLoading(false) }
+      // Always set an array — never pass raw object to state
+      setElections(Array.isArray(res.data) ? res.data : [])
+    } catch (err) {
+      setError('Failed to load elections. Please refresh the page.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const toggleElection = async (id) => {
     if (expanded === id) { setExpanded(null); return }
     setExpanded(id)
     if (!candidates[id]) {
-      const res = await getCandidates(id)
-      setCandidates(prev => ({ ...prev, [id]: res.data }))
+      try {
+        const res = await getCandidates(id)
+        setCandidates(prev => ({
+          ...prev,
+          [id]: Array.isArray(res.data) ? res.data : []
+        }))
+      } catch (err) {
+        setError('Failed to load candidates.')
+      }
     }
   }
 
   // Group candidates by position
   const byPosition = (cands) => {
+    if (!Array.isArray(cands)) return {}
     return cands.reduce((acc, c) => {
       acc[c.position] = acc[c.position] || []
       acc[c.position].push(c)
@@ -50,23 +61,28 @@ export default function Elections() {
   const handleVote = async (electionId) => {
     const votes = selected[electionId]
     if (!votes || Object.keys(votes).length === 0) {
-      setError('Please select at least one candidate before submitting.'); return
+      setError('Please select at least one candidate before submitting.')
+      return
     }
-    setError(''); setSuccess(''); setVoting(true)
+    setError('')
+    setSuccess('')
+    setVoting(true)
     try {
-      // Cast votes one per position
       let lastReceipt = ''
       for (const candidateId of Object.values(votes)) {
         const res = await castVote(electionId, Number(candidateId))
-        lastReceipt = res.data.vote_receipt
+        lastReceipt = res.data?.vote_receipt || ''
       }
       setReceipt(lastReceipt)
-      setSuccess(' Your vote has been recorded! Save your receipt below.')
-      // Refresh user data (has_voted = true)
-      window.location.reload()
+      setSuccess('🎉 Your vote has been recorded! Save your receipt below.')
+      setTimeout(() => window.location.reload(), 3000)
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to cast vote.')
-    } finally { setVoting(false) }
+      // Safely extract error message — never render an object
+      const msg = err.response?.data?.error
+      setError(typeof msg === 'string' ? msg : 'Failed to cast vote. Please try again.')
+    } finally {
+      setVoting(false)
+    }
   }
 
   const copyReceipt = () => {
@@ -78,10 +94,11 @@ export default function Elections() {
   if (loading) return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="flex items-center justify-center h-64"><Spinner size="lg" /></div>
+      <div className="flex items-center justify-center h-64">
+        <Spinner size="lg" />
+      </div>
     </div>
   )
-
 
   return (
     <div className="min-h-screen">
@@ -112,15 +129,28 @@ export default function Elections() {
           </div>
         )}
 
-        <Alert type="error" message={error} />
-        <Alert type="success" message={success} />
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 text-sm">
+            {typeof error === 'string' ? error : 'An error occurred. Please try again.'}
+          </div>
+        )}
+
+        {/* Success message */}
+        {success && (
+          <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-4 py-3 text-sm">
+            {typeof success === 'string' ? success : 'Action completed successfully.'}
+          </div>
+        )}
 
         {/* Already voted notice */}
         {user?.has_voted && (
           <div className="card mb-6 border-blue-100 bg-blue-50">
             <div className="flex items-center gap-3">
               <CheckCircle className="h-5 w-5 text-blue-500" />
-              <p className="text-sm text-blue-800 font-medium">You have already cast your vote in this election cycle. Thank you for participating!</p>
+              <p className="text-sm text-blue-800 font-medium">
+                You have already cast your vote. Thank you for participating!
+              </p>
             </div>
           </div>
         )}
@@ -134,8 +164,9 @@ export default function Elections() {
 
         <div className="space-y-4">
           {elections.map(election => {
-            const isOpen = expanded === election.id
-            const cands  = candidates[election.id] || []
+            if (!election || !election.id) return null
+            const isOpen  = expanded === election.id
+            const cands   = candidates[election.id] || []
             const grouped = byPosition(cands)
 
             return (
@@ -150,15 +181,20 @@ export default function Elections() {
                       <Vote className="h-5 w-5 text-primary-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-800">{election.title}</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">{election.description}</p>
+                      <h3 className="font-semibold text-slate-800">{election.title || 'Untitled Election'}</h3>
+                      {election.description && (
+                        <p className="text-xs text-slate-500 mt-0.5">{election.description}</p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0 ml-4">
                     <span className={election.is_active ? 'badge-green' : 'badge-gray'}>
                       {election.is_active ? 'Active' : 'Closed'}
                     </span>
-                    {isOpen ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
+                    {isOpen
+                      ? <ChevronUp className="h-4 w-4 text-slate-400" />
+                      : <ChevronDown className="h-4 w-4 text-slate-400" />
+                    }
                   </div>
                 </button>
 
@@ -174,10 +210,15 @@ export default function Elections() {
 
                     {Object.entries(grouped).map(([position, posCands]) => (
                       <div key={position}>
-                        <h4 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-3 pb-2 border-b border-slate-100">{position}</h4>
+                        <h4 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-3 pb-2 border-b border-slate-100">
+                          {position}
+                        </h4>
                         <div className="grid gap-3 sm:grid-cols-2">
                           {posCands.map(cand => {
+                            if (!cand || !cand.id) return null
                             const isChosen = selected[election.id]?.[position] === String(cand.id)
+                            const isDisabled = user?.has_voted || !election.is_active
+
                             return (
                               <label
                                 key={cand.id}
@@ -185,24 +226,31 @@ export default function Elections() {
                                   isChosen
                                     ? 'border-primary-500 bg-primary-50'
                                     : 'border-slate-200 hover:border-primary-300 hover:bg-slate-50'
-                                } ${(user?.has_voted || !election.is_active) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                } ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                               >
                                 <input
                                   type="radio"
                                   name={`${election.id}-${position}`}
                                   value={cand.id}
-                                  disabled={user?.has_voted || !election.is_active}
+                                  disabled={isDisabled}
                                   checked={isChosen}
                                   onChange={() => setSelected(prev => ({
                                     ...prev,
-                                    [election.id]: { ...(prev[election.id] || {}), [position]: String(cand.id) }
+                                    [election.id]: {
+                                      ...(prev[election.id] || {}),
+                                      [position]: String(cand.id)
+                                    }
                                   }))}
                                   className="mt-0.5 accent-primary-500"
                                 />
                                 <div>
-                                  <p className="font-medium text-slate-800 text-sm">{cand.full_name}</p>
-                                  {cand.department && <p className="text-xs text-slate-500">{cand.department}</p>}
-                                  {cand.manifesto && <p className="text-xs text-slate-400 mt-1 line-clamp-2">{cand.manifesto}</p>}
+                                  <p className="font-medium text-slate-800 text-sm">{cand.full_name || 'Unknown'}</p>
+                                  {cand.department && (
+                                    <p className="text-xs text-slate-500">{cand.department}</p>
+                                  )}
+                                  {cand.manifesto && (
+                                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">{cand.manifesto}</p>
+                                  )}
                                 </div>
                               </label>
                             )
