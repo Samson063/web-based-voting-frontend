@@ -40,8 +40,8 @@ export default function Login() {
           <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-float">
             <Vote className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Sora, sans-serif' }}>UniVote</h1>
-          <p className="text-primary-200 text-lg mb-10">Secure Student Election Portal</p>
+          <h1 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Sora, sans-serif' }}>BouestiVote</h1>
+          <p className="text-gray-300 text-lg mb-10">Secure Student Election Portal</p>
 
           {/* Feature highlights */}
           <div className="space-y-4 text-left max-w-sm">
@@ -89,7 +89,7 @@ export default function Login() {
                 <div className="relative">
                   <input
                     className="input pl-10"
-                    placeholder="e.g. CSC/2021/001"
+                    placeholder="e.g. 4999"
                     value={form.matric_number}
                     onChange={e => setForm({ ...form, matric_number: e.target.value })}
                     autoComplete="username"

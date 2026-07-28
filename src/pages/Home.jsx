@@ -149,19 +149,19 @@ export default function Home() {
         <div className="relative max-w-6xl mx-auto px-4 py-20 lg:py-28 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="animate-fade-in-down inline-flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium text-white mb-6 border border-white/20">
+              {/* <div className="animate-fade-in-down inline-flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium text-white mb-6 border border-white/20">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
                 </span>
                 System Active — Voting Open
-              </div>
+              </div> */}
               <h1 className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6" style={{ fontFamily: 'Sora, sans-serif' }}>
                 Your Vote.<br />Your Voice.<br />
                 <span className="gradient-text">Secured.</span>
               </h1>
               <p className="animate-fade-in-up delay-200 text-primary-100 text-lg max-w-lg mb-8 leading-relaxed">
-                UniVote is a secure, transparent, web-based e-voting platform for university student elections — with real-time results and a full audit trail.
+                BouestiVote is a secure, transparent, web-based e-voting platform for university student elections, with real-time results and a full audit trail.
               </p>
               <div className="animate-fade-in-up delay-400 flex items-center gap-4 flex-wrap">
                 {user ? (
@@ -179,14 +179,14 @@ export default function Home() {
                   </>
                 )}
               </div>
-              <div className="animate-fade-in-up delay-600 flex items-center gap-6 mt-8 flex-wrap">
+              <div className="animate-fade-in-up delay-600 flex items-center gap-6 mt-8 flex-wrap text-gray-300">
                 {[
                   { icon: ShieldCheck, text: 'End-to-end encrypted' },
                   { icon: Eye,         text: 'Transparent results'  },
                   { icon: TrendingUp,  text: 'Real-time tallying'   },
                 ].map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-center gap-1.5 text-primary-200 text-sm">
-                    <Icon className="h-4 w-4 text-emerald-400" /> {text}
+                    <Icon className="h-4 w-4 text-gray-300" /> {text}
                   </div>
                 ))}
               </div>
@@ -297,7 +297,7 @@ export default function Home() {
       <section className="bg-gradient-to-br from-slate-800 to-slate-900 py-24" ref={stepsRef}>
         <div className="max-w-5xl mx-auto px-4">
           <div className={`text-center mb-14 transition-all duration-700 ${stepsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <p className="text-primary-400 text-sm font-semibold uppercase tracking-widest mb-2">Simple Process</p>
+            <p className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-2">Simple Process</p>
             <h2 className="text-3xl font-bold text-white" style={{ fontFamily: 'Sora, sans-serif' }}>How It Works</h2>
             <p className="text-slate-400 mt-3 max-w-xl mx-auto text-sm">From registration to verified results in four simple steps</p>
           </div>
@@ -306,7 +306,7 @@ export default function Home() {
               <div key={i} className={`text-center group transition-all duration-700 ${stepsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: `${i*0.15}s` }}>
                 <div className="relative mx-auto w-16 h-16 mb-5">
                   <div className="w-16 h-16 bg-primary-500/20 border-2 border-primary-500 rounded-2xl flex items-center justify-center group-hover:bg-primary-500 group-hover:scale-110 transition-all duration-300">
-                    <step.icon className="h-7 w-7 text-primary-400 group-hover:text-white transition-colors duration-300" />
+                    <step.icon className="h-7 w-7 text-gray-300 group-hover:text-white transition-colors duration-300" />
                   </div>
                   <span className="absolute -top-2 -right-2 w-6 h-6 bg-primary-500 rounded-full text-white text-xs font-bold flex items-center justify-center">{i+1}</span>
                 </div>
@@ -326,7 +326,7 @@ export default function Home() {
       {/* ══ FEATURES ════════════════════════════════════ */}
       <section className="max-w-6xl mx-auto px-4 py-24" ref={featuresRef}>
         <div className={`text-center mb-14 transition-all duration-700 ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-          <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-2">Why UniVote</p>
+          <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-2">Why BouestiVote?</p>
           <h2 className="text-3xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Built for Trust & Security</h2>
           <p className="text-slate-500 mt-3 max-w-xl mx-auto text-sm">Every feature eliminates a weakness of manual paper voting</p>
         </div>
@@ -398,7 +398,7 @@ export default function Home() {
             </div>
             <h2 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: 'Sora, sans-serif' }}>Ready to Participate?</h2>
             <p className="text-primary-100 mb-10 max-w-md mx-auto leading-relaxed">
-              Join students already registered on UniVote. Your voice matters — make it count.
+              Join students already registered on BouestiVote. Your voice matters, make it count.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link to="/register" className="group flex items-center gap-2 bg-white text-primary-600 font-bold px-8 py-4 rounded-xl hover:bg-primary-50 transition-all shadow-lg hover:-translate-y-1">
@@ -417,7 +417,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2 text-white font-bold text-lg" style={{ fontFamily: 'Sora, sans-serif' }}>
-              <Vote className="h-5 w-5 text-primary-400" /> UniVote
+              <Vote className="h-5 w-5 text-primary-400" /> BouestiVote
             </div>
             <div className="flex items-center gap-6 text-sm">
               {[['Elections','/elections'],['Results','/results'],['Verify Vote','/verify']].map(([label,to]) => (
@@ -426,7 +426,7 @@ export default function Home() {
             </div>
             <div className="text-center sm:text-right">
               <p className="text-xs text-slate-500">Final Year Project</p>
-              <p className="text-xs text-slate-600 mt-0.5">Adebiyi · Afolabi · Ofodi · {new Date().getFullYear()}</p>
+              <p className="text-xs text-slate-600 mt-0.5">Anthony · Ofodi · {new Date().getFullYear()}</p>
             </div>
           </div>
           <div className="mt-8 pt-6 border-t border-slate-800 text-center">

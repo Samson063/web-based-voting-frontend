@@ -77,8 +77,8 @@ export default function Register() {
           <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-float">
             <Vote className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>Join UniVote</h1>
-          <p className="text-primary-200 mb-10">Create your secure voter account</p>
+          <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>Join BouestiVote</h1>
+          <p className="text-gray-300 mb-10">Create your secure voter account</p>
 
           <div className="space-y-3 text-left max-w-xs">
             {[
@@ -128,7 +128,7 @@ export default function Register() {
                 <div>
                   <label className="label">Matric Number *</label>
                   <div className="relative">
-                    <input className="input pl-9" placeholder="CSC/2021/001" value={form.matric_number} onChange={set('matric_number')} required />
+                    <input className="input pl-9" placeholder="5999" value={form.matric_number} onChange={set('matric_number')} required />
                     <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   </div>
                 </div>
