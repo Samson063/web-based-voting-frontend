@@ -104,7 +104,7 @@ export default function Register() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-500 rounded-2xl mb-2 shadow-lg">
               <Vote className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>UniVote</h1>
+            <h1 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>BouestiVote</h1>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
