@@ -23,7 +23,7 @@ export default function Elections() {
   const fetchElections = async () => {
     try {
       const res = await getElections()
-      // Always set an array — never pass raw object to state
+      // Always set an array 
       setElections(Array.isArray(res.data) ? res.data : [])
     } catch (err) {
       setError('Failed to load elections. Please refresh the page.')
@@ -105,7 +105,7 @@ export default function Elections() {
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Elections</h1>
+          <h1 className="text-lg sm:text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Elections</h1>
           <p className="text-slate-500 text-sm mt-1">Select an election below to view candidates and cast your vote.</p>
         </div>
 

@@ -74,6 +74,7 @@ export default function Login() {
             <h2 className="text-2xl font-bold text-slate-800 mb-1" style={{ fontFamily: 'Sora, sans-serif' }}>Welcome back</h2>
             <p className="text-slate-500 text-sm mb-6">Sign in with your student credentials</p>
 
+            <div className="min-h-[44px]">
             {/* Error alert */}
             {error && (
               <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 mb-4 text-sm animate-fade-in">
@@ -81,6 +82,7 @@ export default function Login() {
                 <span>{error}</span>
               </div>
             )}
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Matric number */}
