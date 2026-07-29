@@ -47,7 +47,7 @@ export default function Login() {
           <div className="space-y-4 text-left max-w-sm">
             {[
               { icon: ShieldCheck, text: 'JWT-secured authentication with role-based access' },
-              { icon: Lock,        text: 'One student, one vote — enforced at database level' },
+              { icon: Lock,        text: 'One student, one vote, enforced at database level' },
               { icon: CheckCircle, text: 'Real-time results with full audit transparency'     },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-start gap-3 bg-white/10 rounded-xl px-4 py-3">
@@ -67,7 +67,7 @@ export default function Login() {
             <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-500 rounded-2xl mb-3 shadow-lg">
               <Vote className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>UniVote</h1>
+            <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>BouestiVote</h1>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
