@@ -158,7 +158,7 @@ export default function Home() {
               </div> */}
               <h1 className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6" style={{ fontFamily: 'Sora, sans-serif' }}>
                 Your Vote.<br />Your Voice.<br />
-                <span className="gradient-text">Secured.</span>
+                <span className="text-green-500">Secured.</span>
               </h1>
               <p className="animate-fade-in-up delay-200 text-primary-100 text-lg max-w-lg mb-8 leading-relaxed">
                 BouestiVote is a secure, transparent, web-based e-voting platform for university student elections, with real-time results and a full audit trail.
