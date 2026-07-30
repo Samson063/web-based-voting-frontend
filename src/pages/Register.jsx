@@ -194,7 +194,9 @@ export default function Register() {
                 {loading ? (
                   <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />Creating account…</>
                 ) : (
-                  <><ShieldCheck className="h-4 w-4" />Create Secure Account</>
+                  <>
+                  {/* <ShieldCheck className="h-4 w-4" /> */}
+                  Create Account</>
                 )}
               </button>
             </form>
@@ -211,10 +213,10 @@ export default function Register() {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 mt-6 text-xs text-slate-400">
+          {/* <div className="flex items-center justify-center gap-2 mt-6 text-xs text-slate-400">
             <Lock className="h-3.5 w-3.5" />
             Your data is protected with bcrypt hashing & TLS encryption
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

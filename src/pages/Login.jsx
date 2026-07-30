@@ -140,8 +140,8 @@ export default function Login() {
                   </>
                 ) : (
                   <>
-                    <ShieldCheck className="h-4 w-4" />
-                    Sign In Securely
+                    {/* <ShieldCheck className="h-4 w-4" /> */}
+                    Sign In
                   </>
                 )}
               </button>
@@ -161,10 +161,10 @@ export default function Login() {
           </div>
 
           {/* Security note */}
-          <div className="flex items-center justify-center gap-2 mt-6 text-xs text-slate-400">
+          {/* <div className="flex items-center justify-center gap-2 mt-6 text-xs text-slate-400">
             <Lock className="h-3.5 w-3.5" />
             Your credentials are protected with 256-bit encryption
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

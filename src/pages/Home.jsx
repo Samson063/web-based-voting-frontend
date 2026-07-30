@@ -134,7 +134,7 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       <Navbar />
 
-      {/* ══ HERO ════════════════════════════════════════ */}
+      {/* HERO */}
       <section className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-indigo-700 overflow-hidden min-h-[92vh] flex items-center">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/5 rounded-full animate-float" />
@@ -218,11 +218,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ LIVE STATS ══════════════════════════════════ */}
+      {/* ══ LIVE STATS */}
       <section className="bg-white pt-12 pb-20" ref={statsRef}>
         <div className="max-w-5xl mx-auto px-4">
           <div className={`flex items-center justify-center gap-3 mb-6 transition-all duration-700 ${statsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-            <p className="text-slate-600 text-sm font-semibold uppercase tracking-widest">Live System Statistics</p>
+            <p className="text-slate-600 text-sm font-semibold uppercase tracking-widest">System Statistics</p>
             {lastUpdated && (
               <span className="flex items-center gap-1 text-xs text-slate-400">
                 <RefreshCw className="h-3 w-3 animate-spin" style={{ animationDuration: '3s' }} />
@@ -231,14 +231,12 @@ export default function Home() {
             )}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <StatCard label="Registered Voters" value={stats.voters}     icon={Users}       colorClass="bg-emerald-500" delay="0.0s" started={statsVisible} live />
-            <StatCard label="Active Elections"   value={stats.elections}  icon={Vote}        colorClass="bg-amber-500"   delay="0.1s" started={statsVisible} live />
-            <StatCard label="Candidates"         value={stats.candidates} icon={Award}       colorClass="bg-purple-500"  delay="0.2s" started={statsVisible} live />
-            <StatCard label="Votes Cast"         value={stats.votes}      icon={CheckCircle} colorClass="bg-cyan-500"    delay="0.3s" started={statsVisible} live />
+            <StatCard label="Registered Voters" value={stats.voters}     icon={Users}       colorClass="bg-emerald-500" delay="0.0s" started={statsVisible}  />
+            <StatCard label="Active Elections"   value={stats.elections}  icon={Vote}        colorClass="bg-amber-500"   delay="0.1s" started={statsVisible}  />
+            <StatCard label="Candidates"         value={stats.candidates} icon={Award}       colorClass="bg-purple-500"  delay="0.2s" started={statsVisible}  />
+            <StatCard label="Votes Cast"         value={stats.votes}      icon={CheckCircle} colorClass="bg-cyan-500"    delay="0.3s" started={statsVisible} />
           </div>
-          <p className={`text-center text-slate-400 text-xs mt-4 transition-all duration-700 delay-500 ${statsVisible ? 'opacity-100' : 'opacity-0'}`}>
-            ↻ Statistics refresh automatically every 10 seconds
-          </p>
+        
         </div>
       </section>
 
