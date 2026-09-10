@@ -208,3 +208,9 @@
 .orbit-ring-reverse {
   animation: spin-reverse 25s linear infinite;
 }
+
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}

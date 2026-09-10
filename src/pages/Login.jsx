@@ -40,7 +40,7 @@ export default function Login() {
           <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-float">
             <Vote className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Sora, sans-serif' }}>BouestiVote</h1>
+          <h1 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Sora, sans-serif' }}>UniVote</h1>
           <p className="text-gray-300 text-lg mb-10">Secure Student Election Portal</p>
 
           {/* Feature highlights */}
@@ -67,7 +67,7 @@ export default function Login() {
             <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-500 rounded-2xl mb-3 shadow-lg">
               <Vote className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>BouestiVote</h1>
+            <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>UniVote</h1>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">

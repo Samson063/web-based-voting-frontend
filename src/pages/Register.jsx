@@ -77,7 +77,7 @@ export default function Register() {
           <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-float">
             <Vote className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>Join BouestiVote</h1>
+          <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>Join UniVote</h1>
           <p className="text-gray-300 mb-10">Create your secure voter account</p>
 
           <div className="space-y-3 text-left max-w-xs">
@@ -104,7 +104,7 @@ export default function Register() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-500 rounded-2xl mb-2 shadow-lg">
               <Vote className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>BouestiVote</h1>
+            <h1 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>UniVote</h1>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
