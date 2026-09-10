@@ -39,7 +39,7 @@ export default function Navbar() {
           onClick={() => setOpen(false)}
         >
           <Vote className="h-5 w-5" />
-          BouestiVote
+          UniVote
         </Link>
 
         {/* Desktop nav */}
