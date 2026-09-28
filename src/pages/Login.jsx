@@ -1,16 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../lib/api'
+import { login, beginPasskeyLogin, finishPasskeyLogin } from '../lib/api'
 import { useAuth } from '../lib/AuthContext'
-import { Vote, Eye, EyeOff, ShieldCheck, Lock, AlertCircle, CheckCircle } from 'lucide-react'
+import {
+  isBiometricAvailable, getCredential, friendlyError,
+} from '../lib/webauthn'
+import { Vote, Eye, EyeOff, ShieldCheck, Lock, AlertCircle, CheckCircle, Fingerprint } from 'lucide-react'
 
 export default function Login() {
   const [form, setForm]       = useState({ matric_number: '', password: '' })
   const [showPw, setShowPw]   = useState(false)
   const [error, setError]     = useState('')
   const [loading, setLoading] = useState(false)
+  const [bioAvailable, setBioAvailable] = useState(false)
+  const [bioLoading, setBioLoading]     = useState(false)
   const { loginUser }         = useAuth()
   const navigate              = useNavigate()
+
+  // Only offer the biometric button on devices that actually have a sensor
+  useEffect(() => { isBiometricAvailable().then(setBioAvailable) }, [])
+
+  // Fingerprint / Face ID sign-in.
+  // If the matric number field is filled we scope the prompt to that student;
+  // if it is empty the browser shows every passkey saved for this site.
+  const handleBiometric = async () => {
+    setError('')
+    setBioLoading(true)
+    try {
+      const { data: challenge } = await beginPasskeyLogin(form.matric_number.trim())
+      const credential = await getCredential(challenge.options)
+      const res = await finishPasskeyLogin({
+        session_id: challenge.session_id,
+        credential,
+      })
+      loginUser(res.data.token, res.data.user)
+      navigate(res.data.user.role === 'admin' ? '/admin' : '/elections')
+    } catch (err) {
+      setError(err.response?.data?.error || friendlyError(err))
+    } finally { setBioLoading(false) }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,7 +49,8 @@ export default function Login() {
     try {
       const res = await login(form.matric_number.trim(), form.password)
       loginUser(res.data.token, res.data.user)
-      navigate(res.data.user.role === 'admin' ? '/admin' : '/elections')
+      // Voters must complete a fingerprint / face check before continuing
+      navigate(res.data.user.role === 'admin' ? '/admin' : '/biometric')
     } catch (err) {
       setError(err.response?.data?.error || 'Invalid credentials. Please try again.')
     } finally { setLoading(false) }
@@ -153,6 +182,28 @@ export default function Login() {
               <span className="text-xs text-slate-400">or</span>
               <div className="flex-1 h-px bg-slate-100" />
             </div>
+
+            {/* Biometric sign-in */}
+            {bioAvailable && (
+              <button
+                type="button"
+                onClick={handleBiometric}
+                disabled={bioLoading}
+                className="btn-secondary w-full flex items-center justify-center gap-2 py-3 mb-6"
+              >
+                {bioLoading ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+                    Waiting for your device…
+                  </>
+                ) : (
+                  <>
+                    <Fingerprint className="h-4 w-4" />
+                    Sign in with fingerprint or face
+                  </>
+                )}
+              </button>
+            )}
 
             <p className="text-center text-sm text-slate-500">
               Don't have an account?{' '}

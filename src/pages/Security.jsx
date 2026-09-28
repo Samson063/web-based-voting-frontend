@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Navbar from '../components/ui/Navbar'
+import { useAuth } from '../lib/AuthContext'
 import {
   beginPasskeyRegistration, finishPasskeyRegistration,
   listPasskeys, deletePasskey,
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react'
 
 export default function Security() {
+  const { user, loginUser } = useAuth()
   const [devices, setDevices]   = useState([])
   const [loading, setLoading]   = useState(true)
   const [enrolling, setEnroll]  = useState(false)
@@ -38,11 +40,12 @@ export default function Security() {
     try {
       const { data: challenge } = await beginPasskeyRegistration()
       const credential = await createCredential(challenge.options)
-      await finishPasskeyRegistration({
+      const res = await finishPasskeyRegistration({
         session_id:   challenge.session_id,
         device_label: guessDeviceLabel(),
         credential,
       })
+      if (res.data?.token) loginUser(res.data.token, user)
       setSuccess('Biometric unlock is now enabled on this device.')
       load()
     } catch (err) {
