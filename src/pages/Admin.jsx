@@ -343,13 +343,13 @@ export default function Admin() {
               </p>
               <p className="text-xs text-slate-400 mb-3">
                 One student per line: <span className="font-mono">matric_number,full_name,department</span>.
-                Name and department are optional but recommended — the name is used to stop someone
+                Name and department are optional but recommended, the name is used to stop someone
                 registering with another student's matric number.
               </p>
 
               <textarea
                 className="input font-mono text-xs h-40"
-                placeholder={'matric_number,full_name,department\nBOU/20/0001,Ada Okafor,Computer Science'}
+                placeholder={'matric_number,full_name,department\n0001,Ada Okafor,Computer Science'}
                 value={rosterText}
                 onChange={e => setRosterText(e.target.value)}
               />
