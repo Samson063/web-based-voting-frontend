@@ -144,7 +144,7 @@ export function friendlyError(err) {
     case 'NotSupportedError':
       return 'This device does not support fingerprint or face unlock.'
     case 'SecurityError':
-      return 'Biometric unlock only works over HTTPS (or on localhost).'
+      return 'Biometric unlock is not allowed on this address. Use the official https site, or localhost when testing locally.'
     case 'AbortError':
       return 'The request was cancelled.'
     default:
