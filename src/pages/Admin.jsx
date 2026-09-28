@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react'
 import {
   getStats, getAllUsers, getAuditLogs, getElections,
-  createElection, toggleElection, addCandidate, setEligibility
+  createElection, toggleElection, addCandidate, setEligibility,
+  deleteElection, getRoster, uploadRoster, clearRoster
 } from '../lib/api'
 import Navbar from '../components/ui/Navbar'
 import Spinner from '../components/ui/Spinner'
 import Alert from '../components/ui/Alert'
 import {
   LayoutDashboard, Users, Vote, ScrollText, Plus, ToggleLeft,
-  ToggleRight, UserCheck, UserX, ChevronDown, ChevronUp
+  ToggleRight, UserCheck, UserX, ChevronDown, ChevronUp, Trash2, GraduationCap
 } from 'lucide-react'
 
 const TABS = [
   { id: 'overview',   label: 'Overview',     icon: LayoutDashboard },
   { id: 'elections',  label: 'Elections',    icon: Vote },
   { id: 'voters',     label: 'Voters',       icon: Users },
+  { id: 'roster',     label: 'Student Roster', icon: GraduationCap },
   { id: 'audit',      label: 'Audit Log',    icon: ScrollText },
 ]
 
@@ -35,6 +37,11 @@ export default function Admin() {
   const [cForm, setCForm] = useState({ election_id: '', full_name: '', position: '', department: '', manifesto: '' })
   const [showCForm, setShowCForm] = useState(false)
 
+  // Student roster
+  const [roster, setRoster]         = useState({ count: 0, enforced: false })
+  const [rosterText, setRosterText] = useState('')
+  const [rosterBusy, setRosterBusy] = useState(false)
+
   useEffect(() => { loadAll() }, [])
 
   const loadAll = async () => {
@@ -51,16 +58,61 @@ export default function Admin() {
   const handleCreateElection = async (e) => {
     e.preventDefault()
     try {
-      await createElection({
-      ...eForm,
-      start_time: new Date(eForm.start_time).toISOString(),
-      end_time: new Date(eForm.end_time).toISOString(),
-    })
+      await createElection(eForm)
       flash('success', 'Election created successfully.')
       setShowEForm(false)
       setEForm({ title: '', description: '', start_time: '', end_time: '', is_active: false })
       loadAll()
     } catch (err) { flash('error', err.response?.data?.error || 'Failed to create election.') }
+  }
+
+  const loadRoster = async () => {
+    try { setRoster((await getRoster()).data) } catch { /* shown on next load */ }
+  }
+  useEffect(() => { loadRoster() }, [])
+
+  // Accepts pasted rows or a .csv file: matric_number,full_name,department
+  const parseRoster = (text) => text
+    .split(/\r?\n/)
+    .map(line => line.split(',').map(c => c.trim().replace(/^"|"$/g, '')))
+    .filter(cols => cols[0] && !/^matric/i.test(cols[0]))
+    .map(([matric_number, full_name = '', department = '']) => ({ matric_number, full_name, department }))
+
+  const handleRosterFile = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => setRosterText(String(reader.result))
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
+  const handleRosterUpload = async () => {
+    const students = parseRoster(rosterText)
+    if (students.length === 0) { flash('error', 'No valid rows found.'); return }
+    setRosterBusy(true)
+    try {
+      const res = await uploadRoster(students)
+      flash('success', `${res.data.saved} students saved${res.data.skipped ? `, ${res.data.skipped} skipped` : ''}.`)
+      setRosterText('')
+      loadRoster()
+    } catch (err) { flash('error', err.response?.data?.error || 'Upload failed.') }
+    finally { setRosterBusy(false) }
+  }
+
+  const handleRosterClear = async () => {
+    if (!window.confirm('Clear the whole roster? Anyone will be able to register again.')) return
+    try { await clearRoster(); flash('success', 'Roster cleared.'); loadRoster() }
+    catch (err) { flash('error', err.response?.data?.error || 'Failed to clear roster.') }
+  }
+
+  const handleDeleteElection = async (e) => {
+    if (!window.confirm(`Permanently delete "${e.title}"?\n\nThis removes its candidates and ALL votes cast in it. This cannot be undone.`)) return
+    try {
+      await deleteElection(e.id)
+      flash('success', 'Election deleted.')
+      loadAll()
+    } catch (err) { flash('error', err.response?.data?.error || 'Failed to delete election.') }
   }
 
   const handleToggle = async (id) => {
@@ -261,12 +313,61 @@ export default function Admin() {
                           {e.is_active ? <ToggleRight className="h-3.5 w-3.5" /> : <ToggleLeft className="h-3.5 w-3.5" />}
                           {e.is_active ? 'Deactivate' : 'Activate'}
                         </button>
+                        <button
+                          onClick={() => handleDeleteElection(e)}
+                          disabled={e.is_active}
+                          title={e.is_active ? 'Deactivate before deleting' : 'Delete election'}
+                          className="ml-2 inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-red-100 hover:text-red-700 disabled:opacity-40 disabled:hover:bg-slate-100 disabled:hover:text-slate-600 transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               {elections.length === 0 && <p className="text-center text-slate-400 py-8 text-sm">No elections created yet.</p>}
+            </div>
+          </div>
+        )}
+
+        {/* ── Student roster ─────────────────── */}
+        {tab === 'roster' && (
+          <div className="space-y-4">
+            <div className="card">
+              <p className="text-sm font-semibold text-slate-800 mb-1">BOUESTI student roster</p>
+              <p className="text-sm text-slate-500 mb-3">
+                {roster.enforced
+                  ? `${roster.count} students on the roster. Only these matric numbers can register.`
+                  : 'The roster is empty, so anyone can currently register. Upload your student list to restrict sign-up to BOUESTI students.'}
+              </p>
+              <p className="text-xs text-slate-400 mb-3">
+                One student per line: <span className="font-mono">matric_number,full_name,department</span>.
+                Name and department are optional but recommended — the name is used to stop someone
+                registering with another student's matric number.
+              </p>
+
+              <textarea
+                className="input font-mono text-xs h-40"
+                placeholder={'matric_number,full_name,department\nBOU/20/0001,Ada Okafor,Computer Science'}
+                value={rosterText}
+                onChange={e => setRosterText(e.target.value)}
+              />
+
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <button onClick={handleRosterUpload} disabled={rosterBusy || !rosterText.trim()} className="btn-primary disabled:opacity-50">
+                  {rosterBusy ? 'Uploading…' : 'Upload roster'}
+                </button>
+                <label className="btn-secondary cursor-pointer">
+                  Choose .csv file
+                  <input type="file" accept=".csv,text/csv,text/plain" className="hidden" onChange={handleRosterFile} />
+                </label>
+                {roster.enforced && (
+                  <button onClick={handleRosterClear} className="ml-auto text-xs text-red-600 hover:underline">
+                    Clear roster
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
