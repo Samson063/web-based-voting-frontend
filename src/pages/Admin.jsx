@@ -51,7 +51,11 @@ export default function Admin() {
   const handleCreateElection = async (e) => {
     e.preventDefault()
     try {
-      await createElection(eForm)
+      await createElection({
+      ...eForm,
+      start_time: new Date(eForm.start_time).toISOString(),
+      end_time: new Date(eForm.end_time).toISOString(),
+    })
       flash('success', 'Election created successfully.')
       setShowEForm(false)
       setEForm({ title: '', description: '', start_time: '', end_time: '', is_active: false })
